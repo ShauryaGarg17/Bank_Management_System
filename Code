@@ -97,3 +97,108 @@ public:
         }
         return -1;
     }
+    bool login(string name, int accountNumber) {
+        for (int i = 0; i < accounts.size(); i++) {
+            if (accounts[i].getName() == name && accounts[i].getAccountNumber() == accountNumber) {
+                loggedIn = true;
+                currentAccountNumber = accountNumber;
+                cout << "Login successful!" << endl;
+                cout << "Account Balance: " << accounts[i].getBalance() << endl;
+                cout << "Pending Loan Amount: " << accounts[i].getLoanAmount() << endl;
+                return true;
+            }
+        }
+        return false;
+    }
+    void logout() {
+        loggedIn = false;
+        currentAccountNumber = -1;
+        cout << "Logout successful!" << endl;
+    }
+    bool isLoggedIn() const {
+        return loggedIn;
+    }
+    int getCurrentAccountNumber() const {
+        return currentAccountNumber;
+    }
+
+    void withdrawAmount(int accountNumber, float amount) {
+        int index = findAccountIndex(accountNumber);
+        if (index != -1) {
+            accounts[index].withdraw(amount);
+        } else {
+            cout << "Account not found!" << endl;
+        }
+    }
+    void displayLoanSchemes() {
+        cout << "\nAvailable Loan Schemes:\n";
+        cout << "1. Personal Loan - 10% interest\n";
+        cout << "2. Home Loan - 8% interest\n";
+        cout << "3. Car Loan - 7% interest\n";
+    }
+    void takeLoan(int accountNumber, int choice, float amount) {
+        if (isLoggedIn()) {
+            int index = findAccountIndex(accountNumber);
+            if (index != -1) {
+                float interestRate = 0.0;
+                switch (choice) {
+                case 1:
+                    interestRate = 0.10;
+                    break;
+                case 2:
+                    interestRate = 0.08;
+                    break;
+                case 3:
+                    interestRate = 0.07;
+                    break;
+                default:
+                    cout << "Invalid choice!" << endl;
+                    return;
+                }
+                float interest = amount * interestRate;
+                float totalAmount = amount + interest;
+                accounts[index].takeLoan(totalAmount);
+            } else {
+                cout << "Account not found!" << endl;
+            }
+        } else {
+            cout << "Please login first to take a loan!" << endl;
+        }
+    }
+
+    void issueCreditCard(int accountNumber) {
+        int index = findAccountIndex(accountNumber);
+        if (index != -1) {
+            if (accounts[index].isCreditCardEligible()) {
+                cout << "Congratulations! You are eligible for a credit card." << endl;
+                cout << "Choose from the following options:" << endl;
+                cout << "1. Silver Credit Card" << endl;
+                cout << "2. Gold Credit Card" << endl;
+                cout << "3. Platinum Credit Card" << endl;
+                int choice;
+                cout << "Enter your choice: ";
+                cin >> choice;
+                switch (choice) {
+                case 1:
+                    cout << "Silver Credit Card issued successfully!" << endl;
+                    break;
+                case 2:
+                    cout << "Gold Credit Card issued successfully!" << endl;
+                    break;
+                case 3:
+                    cout << "Platinum Credit Card issued successfully!" << endl;
+                    break;
+                default:
+                    cout << "Invalid choice!" << endl;
+                    break;
+                }
+            } else {
+                cout << "You are not eligible for a credit card. Minimum balance required: 10000" << endl;
+            }
+        } else {
+            cout << "Account not found!" << endl;
+        }
+    }
+};
+
+
