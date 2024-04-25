@@ -1,1 +1,99 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+using namespace std;
 
+class Account {
+private:
+    string name;
+    int accountNumber;
+    float balance;
+    float loanAmount;
+    bool creditCardEligible;
+
+public:
+    Account(string name, int accountNumber, float balance) : name(name), accountNumber(accountNumber), balance(balance), loanAmount(0.0), creditCardEligible(balance >= 10000) {}
+    string getName() const {
+        return name;
+    }
+    int getAccountNumber() const {
+        return accountNumber;
+    }
+    float getBalance() const {
+        return balance;
+    }
+    float getLoanAmount() const {
+        return loanAmount;
+    }
+    bool isCreditCardEligible() const {
+        return creditCardEligible;
+    }
+    void deposit(float amount) {
+        balance += amount;
+        if (balance >= 10000) {
+            creditCardEligible = true;
+        }
+    }
+    void withdraw(float amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            cout << "Withdrawal successful!" << endl;
+            cout << "Remaining balance: " << balance << endl;
+        } else {
+            cout << "Insufficient balance!" << endl;
+        }
+    }
+    void takeLoan(float amount) {
+        loanAmount += amount;
+        balance += amount;
+        cout << "Loan of " << amount << " taken successfully!" << endl;
+        cout << "Remaining balance: " << balance << endl;
+    }
+};
+
+class Bank {
+private:
+    vector<Account> accounts;
+    bool loggedIn;
+    int currentAccountNumber;
+
+public:
+    Bank() : loggedIn(false), currentAccountNumber(-1) {}
+
+    void transferMoney(int senderAccountNumber, int receiverAccountNumber, float amount) {
+        int senderIndex = findAccountIndex(senderAccountNumber);
+        int receiverIndex = findAccountIndex(receiverAccountNumber);
+
+        if (senderIndex == -1 || receiverIndex == -1) {
+            cout << "Invalid account number(s)!" << endl;
+        } else if (accounts[senderIndex].getBalance() < amount) {
+            cout << "Insufficient balance!" << endl;
+        } else {
+            accounts[senderIndex].withdraw(amount);
+            accounts[receiverIndex].deposit(amount);
+            cout << "Transfer successful!" << endl;
+        }
+    }
+    void createAccount(string name, int accountNumber, float balance) {
+        Account newAccount(name, accountNumber, balance);
+        accounts.push_back(newAccount);
+        cout << "Account created successfully!" << endl;
+    }
+    void checkAmount(int accountNumber) {
+        int index = findAccountIndex(accountNumber);
+        if (index != -1) {
+            cout << "Balance: " << accounts[index].getBalance() << endl;
+            cout << "Pending Loan Amount: " << accounts[index].getLoanAmount() << endl;
+        } else {
+            cout << "Account not found!" << endl;
+        }
+    }
+    int findAccountIndex(int accountNumber) {
+        for (int i = 0; i < accounts.size(); i++) {
+            if (accounts[i].getAccountNumber() == accountNumber) {
+                return i;
+            }
+        }
+        return -1;
+    }
