@@ -201,4 +201,119 @@ public:
     }
 };
 
+int main() {
+    Bank bank;
+    int choice;
+    do {
+        cout << "\nBank Management System\n";
+        if (!bank.isLoggedIn()) {
+            cout << "1. Login\n";
+        } else {
+            cout << "1. Logout\n";
+        }
+        cout << "2. Transfer Money\n";
+        cout << "3. Create Account\n";
+        cout << "4. Check Amount\n";
+        cout << "5. Withdraw Cash\n";
+        cout << "6. Loan\n";
+        cout << "7. Issue Credit Card\n";
+        cout << "8. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1: {
+            if (!bank.isLoggedIn()) {
+                string name;
+                int accountNumber;
+                cout << "Enter name: ";
+                cin >> name;
+                cout << "Enter account number: ";
+                cin >> accountNumber;
+                if (bank.login(name, accountNumber)) {}
+                else {
+                    cout << "Login failed!" << endl;
+                }
+            } else {
+                bank.logout();
+            }
+            break;
+        }
+        case 2: {
+            int senderAccountNumber, receiverAccountNumber;
+            float amount;
+            cout << "Enter sender's account number: ";
+            cin >> senderAccountNumber;
+            cout << "Enter receiver's account number: ";
+            cin >> receiverAccountNumber;
+            cout << "Enter amount to transfer: ";
+            cin >> amount;
+            bank.transferMoney(senderAccountNumber, receiverAccountNumber, amount);
+            break;
+        }
+        case 3: {
+            string name;
+            int accountNumber;
+            float balance;
+            cout << "Enter name: ";
+            cin >> name;
+            cout << "Enter account number: ";
+            cin >> accountNumber;
+            cout << "Enter balance: ";
+            cin >> balance;
+            bank.createAccount(name, accountNumber, balance);
+            break;
+        }
+        case 4: {
+            int accountNumber;
+            cout << "Enter account number: ";
+            cin >> accountNumber;
+            bank.checkAmount(accountNumber);
+            break;
+        }
+        case 5: {
+            int accountNumber;
+            float amount;
+            cout << "Enter account number: ";
+            cin >> accountNumber;
+            cout << "Enter amount to withdraw: ";
+            cin >> amount;
+            bank.withdrawAmount(accountNumber, amount);
+            break;
+        }
+        case 6: {
+            if (bank.isLoggedIn()) {
+                int accountNumber, loanChoice;
+                float amount;
+                cout << "Enter account number: ";
+                cin >> accountNumber;
+                bank.displayLoanSchemes();
+                cout << "Choose a loan scheme (1/2/3): ";
+                cin >> loanChoice;
+                cout << "Enter loan amount: ";
+                cin >> amount;
+                bank.takeLoan(accountNumber, loanChoice, amount);
+            } else {
+                cout << "Please login first!" << endl;
+            }
+            break;
+        }
+        case 7: {
+            int accountNumber;
+            cout << "Enter account number: ";
+            cin >> accountNumber;
+            bank.issueCreditCard(accountNumber);
+            break;
+        }
+        case 8:
+            cout << "Exiting..." << endl;
+            break;
+        default:
+            cout << "Invalid choice. Please try again." << endl;
+        }
+    } while (choice != 8);
+
+    return 0;
+}
+
 
